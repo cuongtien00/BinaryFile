@@ -5,21 +5,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class ProductManager {
-    public static void main(String[] args) {
-        Product p1 = new Product("C01","IpX","Australia",10,"100%");
-        Product p2 = new Product("C02","Ip11","Japan",16,"98%");
-        Product p3 = new Product("C03","Ip12","Australia",20,"95%");
-        List<Product> productList = new ArrayList<>();
+public class ProductManager implements Serializable {
+    private List<Product> productList;
 
-
-        addProduct(productList,p1,"productList.txt");
-        addProduct(productList,p2,"productList.txt");
-        addProduct(productList,p3,"productList.txt");
-        display("productList.txt");
-        searchInfo("productList.txt");
+    public ProductManager() {
+        productList = new ArrayList<>();
     }
-    public static void searchInfo(String path){
+
+    public List<Product> getProductList() {
+        return productList;
+    }
+
+    public void setProductList(List<Product> productList) {
+        this.productList = productList;
+    }
+
+    public  void searchInfo(String path){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Nhap Ma san pham can search");
         String code = scanner.nextLine();
@@ -50,7 +51,7 @@ public class ProductManager {
 
         }
     }
-    public static void display(String path){
+    public  void display(String path){
         FileInputStream is = null;
         ObjectInputStream ois = null;
 
@@ -72,25 +73,42 @@ public class ProductManager {
             }
         }
     }
-    public static void addProduct(List<Product> list,Product product,String path){
+    public  void addProduct(List<Product> list, String path){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Nhap code");
+        String  code = scanner.nextLine();
+        System.out.println("Nhap ten san pham");
+        String name = scanner.nextLine();
+        System.out.println("Nhap noi san xuat");
+        String source = scanner.nextLine();
+        System.out.println("Nhap gia");
+        int price = scanner.nextInt();
+        Scanner scanner1 = new Scanner(System.in);
+        System.out.println("Nhap mo ta");
+        String description = scanner1.nextLine();
+        Product product = new Product(code,name,source,price,description);
+
+
         FileOutputStream os = null;
         ObjectOutputStream oos = null;
         //Them mot product
         list.add(product);
-        try{
+        try {
             os = new FileOutputStream(path);
             oos = new ObjectOutputStream(os);
 
             //Viet lai list Product
             oos.writeObject(list);
 
-        }catch (IOException e){
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }finally {
-            try{
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
                 os.close();
                 oos.close();
-            }catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
